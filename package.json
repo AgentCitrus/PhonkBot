@@ -1,0 +1,19 @@
+{
+  "name": "phonkbot",
+  "version": "1.0.0",
+  "description": "PhonkBot. What else?",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LemonLimeSoda/PhonkBot.git"
+  },
+  "author": "LemonLimeSoda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LemonLimeSoda/PhonkBot/issues"
+  },
+  "homepage": "https://github.com/LemonLimeSoda/PhonkBot#readme"
+}

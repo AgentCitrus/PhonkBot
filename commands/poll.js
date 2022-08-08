@@ -5,7 +5,7 @@ module.exports = {
 		.setName('poll')
 		.setDescription('Automagically creates a yes/no poll with a description and choices.')
         .addStringOption(option =>
-            option.setName('desc')
+            option.setName('description')
             .setDescription('The description of the poll.')
             .setRequired(true)),
 	async execute(interaction) {

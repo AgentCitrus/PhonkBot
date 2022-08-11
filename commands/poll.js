@@ -10,7 +10,7 @@ module.exports = {
             .setRequired(true)),
 	async execute(interaction) {
 		const embedPoll = new EmbedBuilder()
-            .setTitle(`${interaction.options.getString('desc')}`)
+            .setTitle(`${interaction.options.getString('description')}`)
             .setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.user.avatarURL()}` })
             .setDescription('Answer below.');
         interaction.reply({ embeds: [embedPoll] });

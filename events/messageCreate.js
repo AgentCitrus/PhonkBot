@@ -1,12 +1,12 @@
 const fs = require('fs');
-const { defaultQuipCooldowns } = require('../config.json');
+const { serverData } = require('../config.json');
 
 var quipCooldown = 0;
 
 module.exports = {
 	name: 'messageCreate',
 	execute(message) {
-		let defaultQuipCooldown = defaultQuipCooldowns.filter(data => data.server == message.guild.id).at(0).defaultQuipCooldown
+		let defaultQuipCooldown = serverData.filter(data => data.server == message.guild.id).at(0).defaultQuipCooldown
 
 		if (quipCooldown < 0) {
 			quipCooldown = (Math.floor(Math.random() * defaultQuipCooldown) + 1);

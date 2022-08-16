@@ -7,7 +7,7 @@ let file = editJsonFile(path.join(__dirname, '../config.json'));
 module.exports = {
     name: 'guildCreate',
     execute(guild) {
-        file.append("serverData", { server: guild.id, defaultQuipCooldown: 10 })
+        file.append("serverData", { server: guild.id, defaultQuipCooldown: 10, quipCooldown: 10, customCommands: {} })
         console.log(`New server ${guild.name} registered`)
         file.save();
     }

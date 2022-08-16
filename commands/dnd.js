@@ -26,7 +26,7 @@ module.exports = {
         const body = await getJSONResponse(searchResult.body);
 
         if (body.hasOwnProperty('error')) {
-            interaction.reply(`${capitalize(interaction.options.getString('type'))} '${interaction.options.getString('feature')}' not found`);
+            await interaction.reply(`${capitalize(interaction.options.getString('type'))} '${interaction.options.getString('feature')}' not found`);
             return;
         }
 
@@ -166,7 +166,7 @@ module.exports = {
                 break;
         }
 
-        interaction.reply({ embeds: [infoEmbed] })
+        await interaction.reply({ embeds: [infoEmbed] })
 	},
 };
 

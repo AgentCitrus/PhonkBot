@@ -14,12 +14,16 @@ module.exports = {
             .setDescription('The specified cooldown.')
             .setRequired(true)),
 	async execute(interaction) {
-        let servObj = serverData.filter(data => data.server == interaction.guild.id);
-        servObj.at(0).defaultQuipCooldown = interaction.options.getNumber('cooldown');
+        if (interaction.options.getString('cooldown') <= 0) {
+            await interaction.reply(`Please enter a valid maximum cooldown value.`)
+        }
 
-        file.set("serverData", serverData.map(obj => servObj.find(o => o.server === obj.server) || obj));
+        let servObj = serverData.filter(data => data.server == interaction.guild.id).at(0);
+        servObj.defaultQuipCooldown = interaction.options.getNumber('cooldown');
+
+        file.set("serverData", serverData.map(obj => (servObj.server == obj.server ? servObj : obj)));
         file.save();
 
-        interaction.reply(`Set the maximum server quip cooldown to **${interaction.options.getNumber('cooldown')}**`);
+        await interaction.reply(`Set the maximum server quip cooldown to **${interaction.options.getNumber('cooldown')}**`);
 	},
 };

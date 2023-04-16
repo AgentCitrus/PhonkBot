@@ -27,7 +27,7 @@ module.exports = {
         } else if (servObj.customCommands.hasOwnProperty(interaction.options.getString('command'))) {
             await interaction.reply(servObj.customCommands[`${interaction.options.getString('command')}`]);
         } else {
-            await interaction.reply(`Custom command ${interaction.options.getString('command')} not found.`)
+            await interaction.reply(`Custom command ${interaction.options.getString('command')} not found.`);
         }
 	},
 };

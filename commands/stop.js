@@ -1,4 +1,5 @@
 const { SlashCommandBuilder } = require('discord.js');
+const voice = require('@discordjs/voice')
 const { serverData } = require('../config.json');
 const editJsonFile = require('edit-json-file');
 const path = require('path');
@@ -11,14 +12,15 @@ module.exports = {
 		.setDescription('Ends the current song and clears the queue.'),
 	async execute(interaction) {
 
-        let servObj = serverData.filter(data => data.server == interaction.guild.id).at(0);
+                let servObj = serverData.filter(data => data.server == interaction.guild.id).at(0);
 
-        player.stop();
-        servObj.queue = [];
+                player.stop();
+                voice.getVoiceConnection(interaction.guildId).disconnect();
+                servObj.queue = [];
 
-        file.set("serverData", serverData.map(obj => (servObj.server == obj.server ? servObj : obj)));
-        file.save();
+                file.set("serverData", serverData.map(obj => (servObj.server == obj.server ? servObj : obj)));
+                file.save();
 
-        await interaction.reply(`Queue cleared!`);
+                await interaction.reply(`Queue cleared!`);
 	},
 };

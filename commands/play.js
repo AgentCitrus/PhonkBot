@@ -1,8 +1,8 @@
-const { createAudioPlayer, NoSubscriberBehavior, joinVoiceChannel, createAudioResource, AudioPlayerStatus } = require('@discordjs/voice');
+const { createAudioPlayer, NoSubscriberBehavior, joinVoiceChannel, createAudioResource, AudioPlayerStatus, getVoiceConnection } = require('@discordjs/voice');
 const { SlashCommandBuilder } = require('discord.js');
+const voice = require('@discordjs/voice')
 const fs = require('fs');
-const ytdl = require('ytdl-core');
-const ys = require('youtube-search-api');
+const ytdl = require('@distube/ytdl-core');
 const { serverData } = require('../config.json');
 const editJsonFile = require('edit-json-file');
 const path = require('path');
@@ -27,34 +27,55 @@ module.exports = {
             return;
         }
 
-        const connection = joinVoiceChannel({
+        if (!ytdl.validateID(videoId)) {
+            await interaction.reply('Please enter a valid URL or video ID.');
+            return;
+        }
+
+        connection = joinVoiceChannel({
             channelId: interaction.member.voice.channel.id,
             guildId: interaction.guildId,
             adapterCreator: interaction.guild.voiceAdapterCreator
         });
 
         stream = ytdl(`https://youtu.be/${videoId}`, {
-            filter: 'audioonly',
             quality: 'highestaudio',
             highWaterMark: 1 << 25
         });
 
         if (!servObj.queue.length) {
 
-            global.player = createAudioPlayer({
-                behaviors: {
-                    noSubscriber: NoSubscriberBehavior.Stop
+            global.player = createAudioPlayer();
+
+            await client.on('voiceStateUpdate', (oldState, newState) => {
+                if (!(oldState.channel === null) && oldState.channel.members.size == 1) {
+                    let servObj = serverData.filter(data => data.server == interaction.guild.id).at(0);
+                    servObj.queue = [];
+
+                    file.set("serverData", serverData.map(obj => (servObj.server == obj.server ? servObj : obj)));
+                    file.save();
+                    
+                    voice.getVoiceConnection(servObj.server).disconnect();
+                    player.stop();
+
+                    return;
                 }
             });
 
-            player.on(AudioPlayerStatus.Idle, () => {
-                servObj.queue.shift();
+            await player.on('error', () => {
+                console.trace()
+            })
+
+            await player.on(AudioPlayerStatus.Idle, () => {
+                let servObj = serverData.filter(data => data.server == interaction.guild.id).at(0);
+                if (servObj.loop === 'on') {
+                    servObj.queue.push(servObj.queue[0]);
+                }
+                servObj.queue.shift()
                 if (!servObj.queue.length) {
                     interaction.channel.send('**Queue finished**');
-                    player.stop();
                 } else {
                     stream = ytdl(`${servObj.queue[0]}`, {
-                        filter: 'audioonly',
                         quality: 'highestaudio',
                         highWaterMark: 1 << 25
                     });
@@ -64,8 +85,8 @@ module.exports = {
             });
 
             servObj.queue.push(`https://youtu.be/${videoId}`);
-            player.play(createAudioResource(stream));
-            connection.subscribe(player);
+            await player.play(createAudioResource(stream));
+            await connection.subscribe(player);
             await interaction.reply(`**Now playing:** https://youtu.be/${videoId}`);
         } else {
             servObj.queue.push(`https://youtu.be/${videoId}`);
@@ -74,18 +95,5 @@ module.exports = {
 
         file.set("serverData", serverData.map(obj => (servObj.server == obj.server ? servObj : obj)));
         file.save();
-
-
-
-        /*
-        if (!servObj.queue.length) {
-            player.play(createAudioResource(stream));
-            connection.subscribe(player);
-            await interaction.reply(`**Now playing:** https://youtu.be/${videoId}`);
-        } else {
-            servObj.queue.push(`https://youtu.be/${interaction.options.getString('video').slice(-11)}`);
-            await interaction.reply(`**${ys.GetVideoDetails(interaction.options.getString('video').slice(-11)).title}** added to queue`);
-        }
-        */
 	},
 };

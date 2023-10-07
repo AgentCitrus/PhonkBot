@@ -4,9 +4,9 @@ const { request } = require('undici');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('yomama')
-		.setDescription('Replies with a (typically) rather crude joke about your mother.'),
+		.setDescription('Replies with a usually rather crude joke about your mother.'),
 	async execute(interaction) {
-		const result = await request('https://yomomma-api.herokuapp.com/jokes');
+		const result = await request('https://api.yomomma.info/');
         const jokeObj = await getJSONResponse(result.body);
         interaction.reply(jokeObj.joke);
 	},

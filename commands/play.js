@@ -80,7 +80,6 @@ module.exports = {
                         highWaterMark: 1 << 25
                     });
                     player.play(createAudioResource(stream));
-                    interaction.channel.send(`**Now playing:** ${servObj.queue[0]}`);
                 }
             });
 

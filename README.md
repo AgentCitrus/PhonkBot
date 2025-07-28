@@ -1,3 +1,3 @@
 # PhonkBot
 
-It's PhonkBot. In glorious new discord.js. What more could you ask for?
+the music part of the bot makes me want to perform an acrobatic pirouette off the handle and win an olympic medal or something
